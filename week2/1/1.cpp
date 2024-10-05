@@ -9,11 +9,13 @@ using namespace std;
 
 void stringSplit(string strs,const char split,vector<string>& str)
 {
+    str.clear();
     istringstream iss(strs);
     string temp;
     while(getline(iss,temp,split))
     {
-        str.push_back(temp);
+        if(temp!="")
+            str.push_back(temp);
         // cout<<temp<<endl;
     }
 }
