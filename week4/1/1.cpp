@@ -55,7 +55,16 @@ public:
         hour=stoi(temp[2].substr(0,2));
         minute=stoi(temp[2].substr(3,2));
         second=stoi(temp[2].substr(6,2));
+        err=false;
+        if(month==-1)err=true;
+        if(day>31||day<0)err=true;
+        if(((month==4)||(month==6)||(month==9)||(month==11))&&day>30)err=true;
+        if(month==2&&day>28)err=true;
+        if(hour>=24||hour<0)err=true;
+        if(minute>=60||minute<0)err=true;
+        if(second>=60||second<0)err=true;
     }
+    bool err;
     bool operator<(const Time& that)
     {
         if(month<that.month)return true;
@@ -139,12 +148,20 @@ int main()
 
     getline(cin,strstart);
     getline(cin,strend);
+    
     timestart.setTime(strstart);
     timeend.setTime(strend);
 
+    if(timestart.err||timeend.err)
+    {
+        cout<<"error1"<<endl;
+        return 0;
+    }
+
+
     if(timestart>timeend)
     {
-        cout<<"error"<<endl;
+        cout<<"error2"<<endl;
         return 0;
     }
 
@@ -152,9 +169,15 @@ int main()
     for(int i=0;i<=logs.size();i++)
         if(logs[i].times>=timestart&&logs[i].times<=timeend)
             output.push_back(logs[i]);
-    sort(output.begin(),output.end());
+    // sort(output.begin(),output.end());//居然不排序？
     for(int i=0;i<output.size();i++)
-        cout<<output[i].data<<endl;
+        if(i>=10)
+        {
+            cout<<output.size()-10<<' '<<"lines remain..."<<endl;
+            break;
+        }
+        else
+            cout<<output[i].data<<endl;
 
     return 0;
 }
