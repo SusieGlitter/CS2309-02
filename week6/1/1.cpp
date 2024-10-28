@@ -4,7 +4,7 @@
 #include<vector>
 #include<sstream>
 #include<algorithm>
-
+#include<map>
 
 using namespace std;
 
@@ -37,7 +37,58 @@ int month2number(string month)
     if(month=="Dec")return 12;
     return -1;
 }
-
+class Type
+{
+public:
+    string type;
+    int cnt;
+    Type(string t,int c)
+    {
+        type=t;
+        cnt=c;
+    }
+    Type()
+    {
+        type="";
+        cnt=0;
+    }
+    Type(const Type& that)
+    {
+        type=that.type;
+        cnt=that.cnt;
+    }
+    bool operator<(const Type& that)
+    {
+        if(cnt==that.cnt)
+            return type<that.type;
+        return cnt>that.cnt;
+    }
+};
+class Counter
+{
+public:
+    Counter()
+    {
+        cnt=0;
+        for(int i=0;i<32;i++)
+            daycnt[i]=0;
+    }
+    Counter(const Counter& that)
+    {
+        cnt=that.cnt;
+        for(int i=0;i<32;i++)
+            daycnt[i]=that.daycnt[i];
+    }
+    int cnt;
+    int daycnt[32];
+    int& operator[](int i)
+    {
+        if(i==0)return cnt;
+        return daycnt[i];
+    }
+};
+map<string,Counter>cnt;
+vector<Type>types;
 class Time
 {
 public:
@@ -110,9 +161,22 @@ public:
     string data;
     Time times;
     int id;
+    string type;
     void analysis()
     {
         times.setTime(data.substr(0,15));
+        for(int i=22;i<=data.length();i++)
+            if(data[i]==' '||data[i]=='['||data[i]=='('||data[i]==':'||data[i]==' ')
+            {
+                type=data.substr(22,i-22);
+                break;
+            }
+        if(cnt.count(type)==0)
+        {
+            Counter* temp=new Counter;
+            types.push_back(Type(type,0));
+            cnt[type]=*temp;
+        }
     }
     bool operator<(const Log& that)
     {
@@ -124,9 +188,9 @@ public:
 
 vector<Log>logs;
 
-string strstart,strend;
-Time timestart,timeend;
-
+string monthstr;
+int month;
+int opt;
 vector<Log>output;
 
 int main()
@@ -146,38 +210,36 @@ int main()
     }
     file.close();
 
-    getline(cin,strstart);
-    getline(cin,strend);
-    
-    timestart.setTime(strstart);
-    timeend.setTime(strend);
-
-    if(timestart.err||timeend.err)
-    {
-        cout<<"error1"<<endl;
-        return 0;
-    }
-
-
-    if(timestart>timeend)
-    {
-        cout<<"error2"<<endl;
-        return 0;
-    }
-
-    
+    cin>>monthstr>>opt;
+    month=month2number(monthstr);
     for(int i=0;i<logs.size();i++)
-        if(logs[i].times>=timestart&&logs[i].times<=timeend)
-            output.push_back(logs[i]);
-    // sort(output.begin(),output.end());//居然不排序？
-    for(int i=0;i<output.size();i++)
-        if(i>=10)
+    {
+        if(logs[i].times.month==month)
         {
-            cout<<output.size()-10<<' '<<"lines remain..."<<endl;
-            break;
+            cnt[logs[i].type][logs[i].times.day]++;
+            for(int j=0;j<types.size();j++)
+                if(types[j].type==logs[i].type)
+                {
+                    types[j].cnt++;
+                    break;
+                }
         }
-        else
-            cout<<output[i].data<<endl;
+    }
+    sort(types.begin(),types.end());
+    for(int i=0;i<opt;i++)
+        cout<<'\t'<<types[i].type;
+    cout<<endl;
+    for(int day=1;day<=31;day++)
+    {
+        int daycnt=0;
+        for(int i=0;i<opt;i++)
+            daycnt+=cnt[types[i].type][day];
+        if(daycnt==0)continue;
+        cout<<monthstr<<((day<10)?"  ":" ")<<day;
+        for(int i=0;i<opt;i++)
+            cout<<'\t'<<cnt[types[i].type][day];
+        cout<<endl;
+    }
 
     return 0;
 }
