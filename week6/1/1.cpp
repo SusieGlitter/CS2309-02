@@ -235,7 +235,8 @@ int main()
         for(int i=0;i<opt;i++)
             daycnt+=cnt[types[i].type][day];
         if(daycnt==0)continue;
-        cout<<monthstr<<((day<10)?"  ":" ")<<day;
+        // cout<<monthstr<<((day<10)?"  ":" ")<<day;
+        cout<<monthstr<<" "<<day;
         for(int i=0;i<opt;i++)
             cout<<'\t'<<cnt[types[i].type][day];
         cout<<endl;
