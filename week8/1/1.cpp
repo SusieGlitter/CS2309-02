@@ -60,9 +60,9 @@ public:
         for(int i=0;i<s.size();i++)
             if(s[i]=='(')
                 row++;
-        if(row==-1)
+        if(row==0)
         {
-            row=col=0;
+            col=0;
             return;
         }
         int p=0;
