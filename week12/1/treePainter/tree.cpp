@@ -29,30 +29,6 @@ void Tree::clear(Node *now)
 bool Tree::updateTree(QString s)
 {
     clear(root);
-/*
-    root->x=100;root->y=0;
-    root->depth=0;
-
-    Node *temp0=new Node(s);
-    temp0->fat=root;
-    temp0->depth=1;
-    root->sons.push_back(temp0);
-    for(int i=0;i<3;i++)
-    {
-        Node *temp1=new Node(QString::number(i));
-        temp1->fat=temp0;
-        temp1->depth=2;
-        temp0->sons.push_back(temp1);
-        for(int j=0;j<1+i;j++)
-        {
-            Node *temp2=new Node(QString::number(i)+QString::number(j));
-            temp2->fat=temp1;
-            temp2->depth=3;
-            temp1->sons.push_back(temp2);
-        }
-    }
-*/
-    // qDebug()<<s<<"\n----------\n";
     QStringList lines=s.split("\n");
     lines.removeAll("");
     std::map<QString,int> m;
@@ -61,7 +37,6 @@ bool Tree::updateTree(QString s)
     m[""]=mapcnt++;
     Node *newRoot=new Node;
     nodes.push_back(newRoot);
-    newRoot->depth=0;
     for(auto line:lines)
     {
         while(line[line.length()-1]==' ')
@@ -88,12 +63,11 @@ bool Tree::updateTree(QString s)
             if(node1->fat==nullptr)
             {
                 node1->fat=newRoot;
-                node1->depth=1;
                 newRoot->sons.push_back(node1);
             }
             if(node2->fat!=nullptr)
             {
-                if(node2->fat!=root)
+                if(node2->fat!=newRoot)
                 {
                     for(auto node:nodes)
                         delete node;
@@ -104,7 +78,6 @@ bool Tree::updateTree(QString s)
                 node2->fat=nullptr;
             }
             node1->sons.push_back(node2);
-            node2->depth=node1->depth+1;
             node2->fat=node1;
         }
         else
@@ -120,7 +93,6 @@ bool Tree::updateTree(QString s)
             if(node->fat==nullptr)
             {
                 node->fat=newRoot;
-                node->depth=1;
                 newRoot->sons.push_back(node);
             }
         }
@@ -158,6 +130,7 @@ void Tree::adjust1(Node *now)
     {
         now->x=180;
         now->y=0;
+        now->depth=0;
     }
     double n=int(now->sons.size());
     for(int i=0;i<n;i++)
@@ -165,6 +138,7 @@ void Tree::adjust1(Node *now)
         Node *son=now->sons[i];
         son->x=now->x-(n-1)/2*wDis-(n-1)*r+(wDis+2*r)*i;
         son->y=now->y+hDis+2*r;
+        son->depth=now->depth+1;
         adjust1(son);
     }
 }
