@@ -13,13 +13,15 @@ SOURCES += \
     frac.cpp \
     main.cpp \
     gamewidget.cpp \
-    solver.cpp
+    solver.cpp \
+    timer.cpp
 
 HEADERS += \
     expression.h \
     frac.h \
     gamewidget.h \
-    solver.h
+    solver.h \
+    timer.h
 
 FORMS += \
     gamewidget.ui

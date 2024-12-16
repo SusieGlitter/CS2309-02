@@ -15,6 +15,7 @@
 #include "solver.h"
 #include "expression.h"
 #include "frac.h"
+#include "timer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,6 +41,7 @@ enum MessageType{
     noticeNewQuestion,// 通知 新题目 =int[4](randomNums[4]) host -> gamer
 
     noticeCorrect,//通知 找到正确答案 =QString(ID)+QString(ans) gamer -> host
+    noticeTimeOut,//通知 答题超时 =null host -> all
 
     noticeGameQuit,// 通知 退出游戏 =QString(ID) gamer -> all
     noticeGameEnd,// 通知 游戏结束 =null host -> gamer
@@ -97,6 +99,7 @@ private:
     Ui::GameWidget *ui;
     QUdpSocket *udpSocket;
     Solver *solver;
+    Timer *onlineTimer;
     qint16 port;
     int randomNums[4];
     int offlinePoints;

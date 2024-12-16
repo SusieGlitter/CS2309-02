@@ -22,16 +22,23 @@ GameWidget::GameWidget(QWidget *parent)
     udpSocket->bind(port,QUdpSocket::ShareAddress|QUdpSocket::ReuseAddressHint);
     connect(udpSocket,SIGNAL(readyRead()),this,SLOT(hearMessage()));
 
-    setStage(resting);
     changeID();
 
     IDList.clear();
     pointList.clear();
+    onlineTimer=new Timer(100,ui->onlineModeTimer,[this](){
+        if(host)
+        {
+            sendMessage(noticeTimeOut);
+        }
+    });
 
     ui->onlineModeRankTabel->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->onlineModeMemberTabel->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     ui->onlineModeRankTabel->setDisabled(true);
+
+    setStage(resting);
 }
 
 GameWidget::~GameWidget()
@@ -164,6 +171,7 @@ void GameWidget::hearMessage()
                 setStage(playingGame);
                 for(int i=0;i<IDList.length();i++)
                     pointList.push_back(0);
+                onlineTimer->reset();
             }
             break;
         case noticeNewQuestion:
@@ -175,7 +183,8 @@ void GameWidget::hearMessage()
                 ui->onlineModeCheckButton->setDisabled(false);
                 ui->onlineModeCheckButton->setVisible(true);
                 ui->onlineModeCheckButton->setText("提交");
-
+                onlineTimer->reset();
+                onlineTimer->start();
             }
             break;
         case noticeCorrect:
@@ -190,6 +199,15 @@ void GameWidget::hearMessage()
                         pointList[i]++;
                         break;
                     }
+                onlineTimer->stop();
+            }
+            break;
+        case noticeTimeOut:
+            if(stage==playingGame)
+            {
+                setStage(playingGame);
+                QString ans=solve(randomNums[0],randomNums[1],randomNums[2],randomNums[3]);
+                ui->onlineModeTextEdit->setPlainText("TimeOut!\nNobody got the answer!\nA possible answer:"+ans);
             }
             break;
         case noticeGameQuit:
@@ -347,6 +365,7 @@ void GameWidget::setStage(Stage stage)
         ui->onlineModeStackedWidget->setCurrentIndex(0);
         ui->onlineModeMemberTabel->clearContents();
         onlineUpdataMemberTable();
+        onlineTimer->reset();
         break;
     case findingRoom:
         ui->modeSelectTabWidget->setTabEnabled(0,false);
@@ -355,6 +374,7 @@ void GameWidget::setStage(Stage stage)
         ui->onlineModeIDEdit->setDisabled(true);
         ui->onlineModePortSelect->setDisabled(true);
         onlineUpdataMemberTable();
+        onlineTimer->reset();
         break;
     case waitingStart:
         ui->onlineModeStartButton->setText("开始游戏");
@@ -372,6 +392,7 @@ void GameWidget::setStage(Stage stage)
         ui->onlineModeQuitRoomButton->setVisible(true);
 
         onlineUpdataMemberTable();
+        onlineTimer->reset();
         break;
     case playingGame:
         if(host)
@@ -397,6 +418,7 @@ void GameWidget::setStage(Stage stage)
             ui->onlineModeRankTabel->setItem(i,1,PointsItem);
         }
         ui->onlineModeStackedWidget->setCurrentIndex(2);
+        onlineTimer->reset();
         break;
     default:
         break;
@@ -675,6 +697,7 @@ void GameWidget::on_modeSelectTabWidget_currentChanged(int index)
         offlineNumShowcaseing();
     }
 }
+
 
 
 
