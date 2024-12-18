@@ -95,7 +95,7 @@ int main()
                 bool flag=false;
                 for(int i=0;i<way[now].size();i++)
                 {
-                    if(way[now][i]<name[now])
+                    if(way[now][i]>name[now])
                     {
                         flag=true;
                         break;
