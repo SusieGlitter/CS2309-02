@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <stack>
+#include <QRegularExpression>
 #include "frac.h"
 
 enum ExpressionError{

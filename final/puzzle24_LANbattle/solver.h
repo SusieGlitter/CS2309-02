@@ -1,9 +1,10 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include <QDateTime>
 #include <QWidget>
 #include <algorithm>
-#include <QDebug>
+// #include <QDebug>
 
 #include "frac.h"
 #include "expression.h"

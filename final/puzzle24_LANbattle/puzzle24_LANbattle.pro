@@ -36,3 +36,5 @@ RESOURCES += \
     img.qrc
 
 RC_ICONS = icon2.ico
+
+QMAKE_CXXFLAGS_RELEASE += -O3

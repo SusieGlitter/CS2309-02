@@ -10,6 +10,7 @@
 #include <QNetworkInterface>
 #include <QFileDialog>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 #include <vector>
 
 #include "solver.h"
@@ -67,6 +68,8 @@ private slots:
 
     void on_solveModeFileButton_clicked();
 
+    void on_solveModeSaveButton_clicked();
+
     void on_solveModeSolveButton_clicked();
 
     void on_modeSelectTabWidget_tabBarClicked(int index);
@@ -92,7 +95,6 @@ private slots:
     void on_onlineModeExitButton_clicked();
 
     void on_modeSelectTabWidget_currentChanged(int index);
-
 
 
 private:

@@ -16,24 +16,32 @@ QString solve(int num0,int num1,int num2,int num3)
         "%1%2((%3%4%5)%6%7)",
         "%1%2(%3%4(%5%6%7))",
     };
-    QChar ops[4]={'+','-','*','/'};
+    static QChar ops[4]={'+','-','*','/'};
     for(int i=0;i<11;i++)
+    {
         for(int j=0;j<64;j++)
         {
             int seq[4]={0,1,2,3};
             do
             {
+                // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"a";
                 QString expString=formatStrings[i].arg(nums[seq[0]]).arg(ops[j/16]).arg(nums[seq[1]]).arg(ops[j/4%4]).arg(nums[seq[2]]).arg(ops[j%4]).arg(nums[seq[3]]);
                 Expression exp(expString);
+
                 exp.calculate();
+
                 Frac res=exp.res;
                 ExpressionError err=exp.err;
                 if(err==noError&&res==Frac(24))
                     return expString;
+                // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"b";
             }
             while(std::next_permutation(seq,seq+4));
+            // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"roundround"<<j;
         }
 
+        // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"round"<<i;
+    }
     return "No solution";
 }
 

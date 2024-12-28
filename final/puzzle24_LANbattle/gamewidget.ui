@@ -27,7 +27,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="solveMode">
     <attribute name="title">
@@ -39,7 +39,7 @@
        <x>20</x>
        <y>20</y>
        <width>360</width>
-       <height>140</height>
+       <height>121</height>
       </rect>
      </property>
     </widget>
@@ -52,6 +52,9 @@
        <height>70</height>
       </rect>
      </property>
+     <property name="tabStopDistance">
+      <double>40.000000000000000</double>
+     </property>
      <property name="placeholderText">
       <string>请输入题目:</string>
      </property>
@@ -61,12 +64,12 @@
       <rect>
        <x>290</x>
        <y>180</y>
-       <width>90</width>
+       <width>40</width>
        <height>30</height>
       </rect>
      </property>
      <property name="text">
-      <string>选择文件</string>
+      <string>导入</string>
      </property>
     </widget>
     <widget class="QPushButton" name="solveModeSolveButton">
@@ -80,6 +83,32 @@
      </property>
      <property name="text">
       <string>开始求解</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="solveModeLoading">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>150</y>
+       <width>360</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="solveModeSaveButton">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>180</y>
+       <width>40</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>导出</string>
      </property>
     </widget>
    </widget>

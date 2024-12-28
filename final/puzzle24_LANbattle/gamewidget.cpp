@@ -451,18 +451,71 @@ void GameWidget::on_solveModeFileButton_clicked()
 }
 
 
+
+void GameWidget::on_solveModeSaveButton_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,tr("保存文件"),"",tr("TXT(*.txt)"));
+    QFile file(fileName);
+    if(file.open(QFile::WriteOnly | QFile::Text))
+    {
+        QString str;
+        QTextStream out(&file);
+        QStringList questionList=ui->solveModeTextEdit->toPlainText().split("\n");
+        QStringList answerList=ui->solveModeTextShowcase->toPlainText().split("\n");
+        int count1=0,count2=0;
+        for(int i=0;i<questionList.length();i++)
+            if(answerList[i]==QString("error"))
+            {
+                continue;
+            }
+            else if(answerList[i]==QString("No solution"))
+            {
+                count2++;
+                out<<"-\t"<<questionList[i]<<"\n";
+            }
+            else
+            {
+                count1++;
+                count2++;
+                out<<"+\t"<<questionList[i]<<"\n";
+            }
+
+        out<<count1<<"/"<<count2;
+        file.close();
+    }
+}
+
+
 void GameWidget::on_solveModeSolveButton_clicked()
 {
+    // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"start";
+    ui->modeSelectTabWidget->setTabEnabled(1,false);
+    ui->modeSelectTabWidget->setTabEnabled(2,false);
+    ui->solveModeFileButton->setDisabled(true);
+    ui->solveModeSaveButton->setDisabled(true);
+    ui->solveModeSolveButton->setDisabled(true);
+    ui->solveModeTextEdit->setDisabled(true);
+
     ui->solveModeTextShowcase->clear();
     int numints[4];
     QStringList numstrs;
+    int count=ui->solveModeTextEdit->toPlainText().split("\n").length();
+    int solved=0;
+    ui->solveModeLoading->setValue(0);
     for(QString line:ui->solveModeTextEdit->toPlainText().split("\n"))
     {
-        numstrs=line.split(" ");
+        line.replace(QRegularExpression("[Aa]"),"1");
+        line.replace(QRegularExpression("[Jj]"),"11");
+        line.replace(QRegularExpression("[Qq]"),"12");
+        line.replace(QRegularExpression("[Kk]"),"13");
+        numstrs=line.split(QRegularExpression("\\s"));
         numstrs.removeAll("");
         if(numstrs.length()!=4)
         {
             ui->solveModeTextShowcase->append("error");
+            // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"error1";
+            solved++;
+            ui->solveModeLoading->setValue(int(1.0*solved/count*100));
             continue;
         }
         bool err=false;
@@ -478,12 +531,25 @@ void GameWidget::on_solveModeSolveButton_clicked()
         if(err)
         {
             ui->solveModeTextShowcase->append("error");
+            // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"error2";
+            solved++;
+            ui->solveModeLoading->setValue(int(1.0*solved/count*100));
             continue;
         }
         // QString ans=solver->getAns(numints[0],numints[1],numints[2],numints[3]);
         QString ans=solve(numints[0],numints[1],numints[2],numints[3]);
+        // qDebug()<<QDateTime::currentDateTime().toMSecsSinceEpoch()<<"solved";
         ui->solveModeTextShowcase->append(ans);
+        solved++;
+        ui->solveModeLoading->setValue(int(1.0*solved/count*100));
     }
+
+    ui->modeSelectTabWidget->setTabEnabled(1,true);
+    ui->modeSelectTabWidget->setTabEnabled(2,true);
+    ui->solveModeFileButton->setDisabled(false);
+    ui->solveModeSaveButton->setDisabled(false);
+    ui->solveModeSolveButton->setDisabled(false);
+    ui->solveModeTextEdit->setDisabled(false);
 }
 
 

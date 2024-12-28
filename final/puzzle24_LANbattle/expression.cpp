@@ -69,16 +69,17 @@ void Expression::setExpression(const QString s)
 }
 void Expression::filter()
 {
-    QString temp=s;
-    s="";
-    for(auto c:temp)
-        if(c.isDigit()||c=='('||c==')'||c=='+'||c=='-'||c=='*'||c=='/')
-            s.append(c);
+    s.remove(QRegularExpression("[^AJQKajqk0-9\\(\\)\\+\\-\\*\\/]"));
+    s.replace(QRegularExpression("[Aa]"),"1");
+    s.replace(QRegularExpression("[Jj]"),"11");
+    s.replace(QRegularExpression("[Qq]"),"12");
+    s.replace(QRegularExpression("[Kk]"),"13");
 }
 void Expression::calculate()
 {
     bool lastIsNum=false;
     bool nowIsNum=false;
+
     for(auto c:s)
     {
         nowIsNum=(c!='('&&c!=')'&&c!='+'&&c!='-'&&c!='*'&&c!='/');
