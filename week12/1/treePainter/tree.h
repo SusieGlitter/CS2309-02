@@ -14,7 +14,8 @@ public:
     Tree();
     ~Tree();
     void clear(Node *now);
-    bool updateTree(QString s);
+    Node *newTree(QString s);
+    void updateTree(QString s);
     void drawTree(QPainter &painter,Node *now);
     int r;
     int canvash;

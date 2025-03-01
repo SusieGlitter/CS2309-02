@@ -26,9 +26,8 @@ void Tree::clear(Node *now)
         now->sons.pop_back();
 }
 
-bool Tree::updateTree(QString s)
+Node *Tree::newTree(QString s)
 {
-    clear(root);
     QStringList lines=s.split("\n");
     lines.removeAll("");
     std::map<QString,int> m;
@@ -39,12 +38,21 @@ bool Tree::updateTree(QString s)
     nodes.push_back(newRoot);
     for(auto line:lines)
     {
-        while(line[line.length()-1]==' ')
+        while(line.length()!=0&&line[line.length()-1]==' ')
             line=line.sliced(0,line.length()-1);
+        while(line.length()!=0&&line[0]==' ')
+            line=line.sliced(1,line.length()-1);
+        if(line.length()==0)
+            continue;
         if(line.contains(' '))
         {
+            if(line.split(QChar(' ')).length()!=2)
+                return nullptr;
             QString s1=line.split(QChar(' '))[0];
             QString s2=line.split(QChar(' '))[1];
+            if(s1.length()==0||s2.length()==0)
+                return nullptr;
+            // qDebug()<<s1<<"!"<<s2;
             if(m.count(s1)==0)
             {
                 m[s1]=mapcnt++;
@@ -72,7 +80,7 @@ bool Tree::updateTree(QString s)
                     for(auto node:nodes)
                         delete node;
                     // qDebug()<<"oh no!\n";
-                    return false;
+                    return nullptr;
                 }
                 newRoot->sons.erase(std::find(newRoot->sons.begin(),newRoot->sons.end(),node2));
                 node2->fat=nullptr;
@@ -97,9 +105,17 @@ bool Tree::updateTree(QString s)
             }
         }
     }
+    return newRoot;
+}
 
-    clear(root);
-    root=newRoot;
+void Tree::updateTree(QString s)
+{
+    Node *newRoot=newTree(s);
+    if(newRoot!=nullptr)
+    {
+        clear(root);
+        root=newRoot;
+    }
 
     adjust1(root);
     while(true)
@@ -111,7 +127,6 @@ bool Tree::updateTree(QString s)
     }
     adjust3_1(root);
     adjust3_2(root,canvasw/2-(xmax+xmin)/2,canvash/2-(ymax+ymin+hDis)/2);
-    return true;
 }
 
 void Tree::drawTree(QPainter &painter,Node *now)

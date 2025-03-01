@@ -55,15 +55,15 @@ void Widget::labelPaint()
 
 void Widget::on_plainTextEdit_textChanged()
 {
-    if(tree->updateTree(ui->plainTextEdit->toPlainText()))
-        update();
+    tree->updateTree(ui->plainTextEdit->toPlainText());
+    update();
 }
 
 void Widget::on_horizontalSlider_valueChanged(int value)
 {
     tree->r=value;
-    if(tree->updateTree(ui->plainTextEdit->toPlainText()))
-        update();
+    tree->updateTree(ui->plainTextEdit->toPlainText());
+    update();
 }
 
 
@@ -71,15 +71,15 @@ void Widget::on_horizontalSlider_valueChanged(int value)
 void Widget::on_horizontalSlider_2_valueChanged(int value)
 {
     tree->hDis=value;
-    if(tree->updateTree(ui->plainTextEdit->toPlainText()))
-        update();
+    tree->updateTree(ui->plainTextEdit->toPlainText());
+    update();
 }
 
 
 void Widget::on_horizontalSlider_3_valueChanged(int value)
 {
     tree->wDis=value;
-    if(tree->updateTree(ui->plainTextEdit->toPlainText()))
-        update();
+    tree->updateTree(ui->plainTextEdit->toPlainText());
+    update();
 }
 

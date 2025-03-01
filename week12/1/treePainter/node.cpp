@@ -34,5 +34,5 @@ void Node::drawNode(QPainter &painter,int r)
     path.setFillRule(Qt::OddEvenFill);
     painter.drawPath(path);
     // painter.drawEllipse(QPoint(x,y),r,r);
-    painter.drawText(QRectF(x-r,y-r,2*r,2*r),Qt::AlignHCenter|Qt::AlignVCenter,name);
+    painter.drawText(QRectF(x-4*r,y-r,8*r,2*r),Qt::AlignHCenter|Qt::AlignVCenter,name);
 }
